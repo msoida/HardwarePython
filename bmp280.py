@@ -207,8 +207,7 @@ class BMP280(object):
         else:
             raise BMP280Error('Unsupported inactive time')
 
-        self._set_config_internal(t_sb, inactive_time,
-                                  filter_constant, spi_3wire)
+        self._set_config_internal(t_sb, filter_constant, spi_3wire)
 
     def raw_pressure(self):
         """Return measured pressure (raw data)."""

@@ -106,8 +106,7 @@ class BME280(BMP280):
         else:
             raise BME280Error('Unsupported inactive time')
 
-        self._set_config_internal(t_sb, inactive_time,
-                                  filter_constant, spi_3wire)
+        self._set_config_internal(t_sb, filter_constant, spi_3wire)
 
     def raw_humidity(self):
         """Return measured humidity (raw data)."""
