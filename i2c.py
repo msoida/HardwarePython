@@ -39,7 +39,7 @@ def _getPiRevision() -> int:
                 # while ignoring extra info in front of the revision
                 # (like 1000 when the Pi was over-volted).
                 match = re_match('Revision\s+:\s+.*(\w{4})$', line)
-                if match and match.group(1) in ['0000', 
+                if match and match.group(1) in ['0000',
                                                 '0002', '0003']:
                     # Return revision 1 if revision
                     # ends with 0000, 0002 or 0003.
@@ -67,20 +67,22 @@ class I2CBus(object):
     On Raspberry Pi automatically connects to proper interface.
     On other systems I2C bus number must be specified for automatic
     connection.
-        
+
     Bus number -1 disables automatic connection on Raspberry Pi.
     """
 
     @staticmethod
     def _error(addr, err):
         if err.errno == 5:
-            return I2CError(err.errno,
+            return I2CError(
+                err.errno,
                 'Error accessing address {}: I2C device not responding'.format(
-                hex(addr)))
+                    hex(addr)))
         # if err.errno == 9:
-        return I2CError(err.errno,
+        return I2CError(
+            err.errno,
             'Error accessing address {}: I2C bus not open'.format(
-            hex(addr)))
+                hex(addr)))
 
     @staticmethod
     def reverseByteOrder(data: int) -> int:
@@ -133,9 +135,23 @@ class I2CBus(object):
             except FileNotFoundError as err:
                 raise FileNotFoundError('Specified I2C bus not found') from err
             except OSError as err:
-                raise I2CError(err.errno, 'Could not connect to I2C bus') from err
+                raise I2CError(
+                    err.errno, 'Could not connect to I2C bus') from err
         else:
             self.bus = SMBus()
+
+    def __del__(self):
+        """Clean up any resources used by the I2C instance."""
+        self.close()
+
+    def __enter__(self):
+        """Context manager enter function."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit function, ensures resources are cleaned up."""
+        self.close()
+        return False  # Don't suppress exceptions.
 
     def open(self, bus: int) -> None:
         """Connect the object to the specified SMBus."""
@@ -305,7 +321,7 @@ class I2CBus(object):
             raise self._error(addr, err) from err
 
     def block_process_call(self, addr: int, cmd: int,
-        vals: List[int]) -> List[int]:
+                           vals: List[int]) -> List[int]:
         """
         Perform SMBus Block Process Call transaction.
 
@@ -320,11 +336,11 @@ class I2CBus(object):
 
     # I2C Access
     def read_i2c_block_data(self, addr: int, cmd: int,
-        len: int=32) -> List[int]:
+                            len: int=32) -> List[int]:
         """
         Perform I2C Block Read transaction.
 
-        This command reads a block of bytes from a device, from a 
+        This command reads a block of bytes from a device, from a
         designated register that is specified through the Comm byte.
         """
         try:
@@ -333,11 +349,11 @@ class I2CBus(object):
             raise self._error(addr, err) from err
 
     def write_i2c_block_data(self, addr: int, cmd: int,
-        vals: List[int]) -> None:
+                             vals: List[int]) -> None:
         """
         Perform I2C Block Write transaction.
 
-        The opposite of the Block Read command, this writes bytes to 
+        The opposite of the Block Read command, this writes bytes to
         a device, to a designated register that is specified through the
         Comm byte. Note that command lengths of 0, 2, or more bytes are
         supported as they are indistinguishable from data.
