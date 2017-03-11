@@ -24,8 +24,16 @@ except ImportError as err:
 
 try:
     from smbus import SMBus
-except ImportError as err:
-    raise ImportError('No SMBus module') from err
+except ImportError:
+    # Try smbus2
+    try:
+        from smbus2 import SMBus
+    except ImportError:
+        # Try Adafruit PureIO
+        try:
+            from Adafruit_PureIO.smbus import SMBus
+        except ImportError as err:
+                raise ImportError('No SMBus module installed') from err
 
 
 def _getPiRevision() -> int:
@@ -125,20 +133,20 @@ class I2CBus(object):
     def pec(self):
         raise TypeError('Cannot delete attribute')
 
-    def __init__(self, bus: int=None) -> None:
+    def __init__(self, bus: int=None, *, smbus=SMBus) -> None:
         if bus is None:
             bus = self.getPiI2CBusNumber()
 
         if bus != -1:
             try:
-                self.bus = SMBus(bus)
+                self.bus = smbus(bus)
             except FileNotFoundError as err:
                 raise FileNotFoundError('Specified I2C bus not found') from err
             except OSError as err:
                 raise I2CError(
                     err.errno, 'Could not connect to I2C bus') from err
         else:
-            self.bus = SMBus()
+            self.bus = smbus()
 
     def __del__(self):
         """Clean up any resources used by the I2C instance."""
