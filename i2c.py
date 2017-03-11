@@ -123,10 +123,21 @@ class I2CBus(object):
         PEC adds a CRC-8 error-checking byte to transfers using it,
         immediately before the terminating STOP.
         """
-        return self.bus.pec
+        try:
+            return self.bus.pec
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     @pec.setter
     def pec(self, val):
+        try:
+            self.bus.pec
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
         self.bus.pec = val
 
     @pec.deleter
@@ -186,6 +197,10 @@ class I2CBus(object):
             return self.bus.write_quick(addr)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def read_byte(self, addr: int) -> int:
         """
@@ -201,6 +216,10 @@ class I2CBus(object):
             return self.bus.read_byte(addr)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def write_byte(self, addr: int, val: int) -> None:
         """
@@ -214,6 +233,10 @@ class I2CBus(object):
             return self.bus.write_byte(addr, val)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def read_byte_data(self, addr: int, cmd: int) -> int:
         """
@@ -227,6 +250,10 @@ class I2CBus(object):
             return self.bus.read_byte_data(addr, cmd)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def write_byte_data(self, addr: int, cmd: int, val: int) -> None:
         """
@@ -241,6 +268,10 @@ class I2CBus(object):
             return self.bus.write_byte_data(addr, cmd, val)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def read_word_data(self, addr: int, cmd: int) -> int:
         """
@@ -255,6 +286,10 @@ class I2CBus(object):
             return self.bus.read_word_data(addr, cmd)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def write_word_data(self, addr: int, cmd: int, val: int) -> None:
         """
@@ -268,6 +303,10 @@ class I2CBus(object):
             return self.bus.write_word_data(addr, cmd, val)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def read_word_swapped(self, addr: int, cmd: int) -> int:
         """
@@ -299,6 +338,10 @@ class I2CBus(object):
             return self.bus.process_call(addr, cmd, val)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def read_block_data(self, addr: int, cmd: int) -> List[int]:
         """
@@ -313,6 +356,10 @@ class I2CBus(object):
             return self.bus.read_block_data(addr, cmd)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def write_block_data(self, addr: int, cmd: int, vals: List[int]) -> None:
         """
@@ -327,6 +374,10 @@ class I2CBus(object):
             return self.bus.write_block_data(addr, cmd, vals)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def block_process_call(self, addr: int, cmd: int,
                            vals: List[int]) -> List[int]:
@@ -341,6 +392,10 @@ class I2CBus(object):
             return self.bus.block_process_call(addr, cmd, vals)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     # I2C Access
     def read_i2c_block_data(self, addr: int, cmd: int,
@@ -355,6 +410,10 @@ class I2CBus(object):
             return self.bus.read_i2c_block_data(addr, cmd, len)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
 
     def write_i2c_block_data(self, addr: int, cmd: int,
                              vals: List[int]) -> None:
@@ -370,3 +429,7 @@ class I2CBus(object):
             return self.bus.write_i2c_block_data(addr, cmd, vals)
         except OSError as err:
             raise self._error(addr, err) from err
+        except AttributeError as err:
+            raise NotImplementedError(
+                'This SMBus implementation does not support this feature.'
+            ) from err
