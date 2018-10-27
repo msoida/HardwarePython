@@ -80,7 +80,7 @@ class TSL2561(object):
         """Return full spectrum light in lux (visible + IR)"""
         return self.data()[0]
 
-    def ifrared(self):
+    def infrared(self):
         """Return infrared light in lux"""
         return self.data()[1]
 
