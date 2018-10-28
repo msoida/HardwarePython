@@ -42,7 +42,7 @@ class TSL2561(object):
         else:
             self._bus.write_byte_data(self.addr, (self.CMD | self.CONTROL), 0x00)
 
-    def timing(self, gain=1, manual=False, integration_time=0b11):
+    def timing(self, gain=1, manual=False, integration_time=0b10):
         self._gain16 = (True if (gain == 16) else False)
         gain = ((1 << 4) if (gain == 16) else 0)
         manual = ((1 << 3) if manual else 0)
